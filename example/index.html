@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>qc-image-lrz</title>
+</head>
+
+<body>
+  <h2>图片压缩上传示例</h2>
+  <pre>
+    1.引入 qc-image-lrz.js，
+    2.初始化对象：var lit=window.MeImageLrz.init(),多图上传时每次都需要初始化下
+    3.执行压缩：lit.compress(file,opt)
+  </pre>
+  <input type="file" placeholder="图片上传" id="upload" multiple accept="images/*" />
+  <ol id="logs">
+  </ol>
+  <script src="../dist/qc-image-lrz.js"></script>
+  <script>
+    document.getElementById('upload').onchange = uploadMultiple
+    var logsBlock = document.getElementById('logs')
+    function uploadMultiple(e) {
+      for (let index = 0; index < e.target.files.length; index++) {
+        const file = e.target.files[index];
+        upload(file)
+      }
+    }
+    function upload(file) {
+      var li = document.createElement('li')
+      li.textContent = '[' + file.name + ']原图大小:' + file.size
+      logsBlock.appendChild(li)
+      window.MeImageLrz.init(null, { dev: true }).compress(file, { resultMode: 'file' }).then(compressRes => {
+        // console.log(compressRes)
+        li = document.createElement('li')
+        li.textContent = '[' + file.name + ']压缩后大小:' + compressRes.size
+        logsBlock.appendChild(li)
+      })
+      window.MeImageLrz.init(null, { dev: true }).compress(file, { resultMode: 'base64' }).then(compressRes => {
+        // console.log(compressRes)
+        li = document.createElement('li')
+        li.innerHTML = '<p>' + '[' + file.name + ']压缩后Base64图片</p><img src="' + compressRes + '" width="100"/>'
+        logsBlock.appendChild(li)
+      })
+      return true;
+    }
+  </script>
+</body>
+
+</html>

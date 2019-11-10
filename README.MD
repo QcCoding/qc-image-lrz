@@ -1,6 +1,6 @@
 # qc-image-lrz
 
-一个 js 图片压缩库，基于 [lrz](https://github.com/think2011/localResizeIMG) 修改而来
+一个 js 图片压缩库,用以压缩 jpg/png 格式图片
 
 作者：[YanEr](https://github.com/qc-web-y)
 
@@ -21,3 +21,9 @@ return ilt.compress(file, { resultMode: 'file' }).then(compressRes => {
   return compressRes
 })
 ```
+
+## 参考
+
+- [lrz](https://github.com/think2011/localResizeIMG)
+
+- [exif-js](https://github.com/exif-js/exif-js)

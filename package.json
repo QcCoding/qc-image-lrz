@@ -1,7 +1,7 @@
 {
   "name": "qc-image-lrz",
-  "description": "一个 js 图片压缩库，修改于lrz",
-  "version": "0.0.1",
+  "description": "一个 js 图片压缩库",
+  "version": "0.0.3",
   "license": "MIT",
   "private": false,
   "keywords": [

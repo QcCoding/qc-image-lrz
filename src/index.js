@@ -2,10 +2,10 @@ import Exif from 'exif-js'
 /**
  * 技术栈： [Exif-Js](http://code.ciaoca.com/javascript/exif-js/)
  *
- * ImgLimit Canvas图片压缩工具
+ * QcImageLrz Canvas图片压缩工具
  *
  * 调用1：
- *  var img = new ImgLimit(file,{...全局配置})
+ *  var img = new QcImageLrz(file,{...全局配置})
  *  img.compress().then(res=>{
  *    // res 成功返回数据
  *  }).catch(err=>{
@@ -13,7 +13,7 @@ import Exif from 'exif-js'
  *  })
  *
  * 调用2：
- *  var img = new ImgLimit()
+ *  var img = new QcImageLrz()
  *  img.compress(file,{...临时配置}).then(res=>{
  *    // res 成功返回数据
  *  }).catch(err=>{
@@ -30,7 +30,7 @@ import Exif from 'exif-js'
  *  => @param {String} config.resultMode 可选，压缩后返回图片模式，默认返回base64，可选值：base64与file文件域两种模式
  *  => @param {Boolean} config.dev 可选，是否开发模式，默认为 process.env.NODE_ENV === 'development'或fasle，开发模式将展示相关输出
  */
-const ImgLimit = function (file, config) {
+const QcImageLrz = function (file, config) {
   this.base64UrlReg = /^data:image\/(\w+);base64,/i
   this.type = null
   this.size = null
@@ -54,7 +54,7 @@ const ImgLimit = function (file, config) {
     dev: process.env.NODE_ENV === 'development' // Boolean，是否开发模式，开发模式将展示相关输出
   }
   this.config = config ? Object.assign({}, this.defaultConfig, config) : this.defaultConfig
-  if (this.config.dev) console.group('[ImgLimit Tip]')
+  if (this.config.dev) console.group('[QcImageLrz Tip]')
 
   // 监听this.file,以更新压缩数据
   var resThisImg = null
@@ -76,14 +76,14 @@ const ImgLimit = function (file, config) {
           this.size = val.size
         }
         if (this.config.dev) {
-          console.log('[ImgLimit Tip]-文件发生更新，已更新相关数据')
+          console.log('[QcImageLrz Tip]-文件发生更新，已更新相关数据')
         }
       } else {
         this.type = val
         this.size = val
         this.fileIsBase64 = val
         if (this.config.dev) {
-          console.log('[ImgLimit Tip]-文件清除，已清空相关数据')
+          console.log('[QcImageLrz Tip]-文件清除，已清空相关数据')
         }
       }
     }
@@ -96,18 +96,18 @@ const ImgLimit = function (file, config) {
  * @param {String|Object} file 必须，但默认会从实例中获取，若不存在则会抛出异常，需要压缩的图片对象或字符串
  * @param {Object} tempConfig 可选，图片压缩临时配置，与主实例config一致，默认使用全局配置
  */
-ImgLimit.prototype.compress = function (file, tempConfig) {
+QcImageLrz.prototype.compress = function (file, tempConfig) {
   const _this = this
   if (file) this.file = file
   if (!document.createElement('canvas').getContext) {
-    throw new Error('[ImgLimit Error]-浏览器不支持canvas')
+    throw new Error('[QcImageLrz Error]-浏览器不支持canvas')
   }
   if (!this.file) {
-    throw new Error('[ImgLimit Error]-未发现可压缩的图片对象或base64Url，请检查是否定义了file')
+    throw new Error('[QcImageLrz Error]-未发现可压缩的图片对象或base64Url，请检查是否定义了file')
   }
   if (tempConfig) {
     this.tempConfig = Object.assign({}, this.config, tempConfig)
-    if (this.config.dev) console.log('[ImgLimit Tip]-发现单独配置，已更新相关配置')
+    if (this.config.dev) console.log('[QcImageLrz Tip]-发现单独配置，已更新相关配置')
   }
 
   return new Promise((resolve, reject) => {
@@ -135,7 +135,7 @@ ImgLimit.prototype.compress = function (file, tempConfig) {
  * => @Callback {Function} .then 成功回调
  * => @Callback {Function} .catch 错误回调
  */
-ImgLimit.prototype.core = function (imgUrl) {
+QcImageLrz.prototype.core = function (imgUrl) {
   if (!imgUrl) return
 
   const _this = this
@@ -149,7 +149,7 @@ ImgLimit.prototype.core = function (imgUrl) {
 
   return new Promise((resolve, reject) => {
     source.onerror = function () {
-      var err = new Error('[ImgLimit Error]-加载图片文件失败')
+      var err = new Error('[QcImageLrz Error]-加载图片文件失败')
       reject(err)
       throw err
     }
@@ -181,7 +181,7 @@ ImgLimit.prototype.core = function (imgUrl) {
           }
           var base64Url = _this.createBase64()
           if (base64Url.length < 10) {
-            var err = new Error('[ImgLimit Error]-生成base64Url失败')
+            var err = new Error('[QcImageLrz Error]-生成base64Url失败')
             reject(err)
             throw err
           }
@@ -210,7 +210,7 @@ ImgLimit.prototype.core = function (imgUrl) {
 }
 
 // 创建图片压缩后尺寸
-ImgLimit.prototype.createResize = function () {
+QcImageLrz.prototype.createResize = function () {
   const config = this.tempConfig || this.config
   const source = this.sourceNewImg
 
@@ -226,7 +226,7 @@ ImgLimit.prototype.createResize = function () {
 
   // 如果原图尺寸小于设定，采用原图尺寸
   if (ret.width < config.width || ret.height < config.height) {
-    if (this.config.dev) console.log('[ImgLimit Tip]-原图尺寸小于设定，采用原图尺寸！')
+    if (this.config.dev) console.log('[QcImageLrz Tip]-原图尺寸小于设定，采用原图尺寸！')
     return ret
   }
 
@@ -262,12 +262,12 @@ ImgLimit.prototype.createResize = function () {
   //   ret.height *= 0.8
   // }
 
-  if (this.config.dev) console.log('[ImgLimit Tip]-压缩尺寸计算成功！')
+  if (this.config.dev) console.log('[QcImageLrz Tip]-压缩尺寸计算成功！')
   return ret
 }
 
 // 创建图片压缩后的base64Url
-ImgLimit.prototype.createBase64 = function () {
+QcImageLrz.prototype.createBase64 = function () {
   const config = this.tempConfig || this.config
   const source = this.sourceNewImg
   const orientation = this.orientation
@@ -326,7 +326,7 @@ ImgLimit.prototype.createBase64 = function () {
  * 根据返回模式对图片压缩结果进行处理
  * @param {String} result 图片压缩后的base64Url
  */
-ImgLimit.prototype.compressResultDeal = function (result) {
+QcImageLrz.prototype.compressResultDeal = function (result) {
   const config = this.tempConfig || this.config
   const source = this.sourceNewImg
   var dealResult
@@ -343,7 +343,7 @@ ImgLimit.prototype.compressResultDeal = function (result) {
       // 返回文件域模式
       dealResult = this.base64ConverFile(this.file)
     }
-    if (this.config.dev) console.log('[ImgLimit Tip]-图片压缩过大，返回原图！')
+    if (this.config.dev) console.log('[QcImageLrz Tip]-图片压缩过大，返回原图！')
   } else {
     // 压缩后图片大小小于源图，采用压缩后结果，默认base64模式
     dealResult = result
@@ -351,7 +351,7 @@ ImgLimit.prototype.compressResultDeal = function (result) {
       // 返回文件域模式
       dealResult = this.base64ConverFile(result)
     }
-    if (this.config.dev) console.log('[ImgLimit Tip]-图片压缩成功，返回压缩结果！')
+    if (this.config.dev) console.log('[QcImageLrz Tip]-图片压缩成功，返回压缩结果！')
   }
 
   if (this.config.dev) {
@@ -382,7 +382,7 @@ ImgLimit.prototype.compressResultDeal = function (result) {
  * @param {Object} loadImageResult 必须，new Image().onLoad后返回的对象
  *  @param {String} type 必须，图片类型
  */
-ImgLimit.prototype.fileConverBase64 = function (loadImageResult, type) {
+QcImageLrz.prototype.fileConverBase64 = function (loadImageResult, type) {
   if (!loadImageResult || !type) return
   const canvas = document.createElement('canvas')
   canvas.width = loadImageResult.width
@@ -398,7 +398,7 @@ ImgLimit.prototype.fileConverBase64 = function (loadImageResult, type) {
  * @param {String} base64Url 必须，图片base64字符串
  * @param {String} name 可选，图片名称，默认随机生成
  */
-ImgLimit.prototype.base64ConverFile = function (base64Url, name) {
+QcImageLrz.prototype.base64ConverFile = function (base64Url, name) {
   if (!base64Url) return
 
   // 初始化参数
@@ -429,7 +429,7 @@ ImgLimit.prototype.base64ConverFile = function (base64Url, name) {
  * @param {String} file 可选，默认this.file，字符串图片文件
  * @param {Boolean} fileIsBase64 可选，默认this.fileIsBase64，是否为base64Url
  */
-ImgLimit.prototype.getFileStringType = function (file, fileIsBase64) {
+QcImageLrz.prototype.getFileStringType = function (file, fileIsBase64) {
   file = file || this.file
   fileIsBase64 = fileIsBase64 || this.fileIsBase64
   return fileIsBase64
@@ -441,7 +441,7 @@ ImgLimit.prototype.getFileStringType = function (file, fileIsBase64) {
  * 获取base64文件大小
  * @param {String} base64Url 必须，图片base64字符串
  */
-ImgLimit.prototype.getBase64Size = function (base64Url) {
+QcImageLrz.prototype.getBase64Size = function (base64Url) {
   if (!base64Url) return
 
   // 去头部data格式
@@ -457,8 +457,8 @@ ImgLimit.prototype.getBase64Size = function (base64Url) {
 }
 
 // 随机生成图片名称
-ImgLimit.prototype.createImgName = function (type) {
-  var ext = (type || 'jpg').replace('image/', '')
+QcImageLrz.prototype.createImgName = function (type) {
+  var ext = (type || 'jpg').replace('image/', '').replace('jpeg', 'jpg')
   return (
     'img_' +
     Number(
@@ -469,7 +469,7 @@ ImgLimit.prototype.createImgName = function (type) {
   )
 }
 export function init(file, config) {
-  return new ImgLimit(file, config);
+  return new QcImageLrz(file, config);
 }
 export const version = process.env.VERSION
-export default ImgLimit;
+export default QcImageLrz;

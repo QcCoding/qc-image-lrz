@@ -37,7 +37,7 @@
         li.textContent = '[' + file.name + ']压缩后大小:' + compressRes.size
         logsBlock.appendChild(li)
       })
-      window.QcImageLrz.init(null, { dev: true }).compress(file, { resultMode: 'base64' }).then(compressRes => {
+      window.QcImageLrz.init(null, { dev: true, width: 100 }).compress(file, { resultMode: 'base64' }).then(compressRes => {
         // console.log(compressRes)
         li = document.createElement('li')
         li.innerHTML = '<p>' + '[' + file.name + ']压缩后Base64图片</p><img src="' + compressRes + '" width="100"/>'
